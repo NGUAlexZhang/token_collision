@@ -1,9 +1,4 @@
 /.idea/*
 /.vscode/*
-/build/*
-/pyvenv.cfg
 *.swp
-/lib
-/lib64
-/bin/*
-/include/*
+/dist/*
