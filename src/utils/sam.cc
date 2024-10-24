@@ -1,88 +1,87 @@
-#include <fstream>
-#include <map>
-#include <vector>
+#include "sam.hpp"
 #include <iostream>
-#include <string>
-const int N = 1e7 ;
-struct Sam{
-    int len, link;
-    std::map<char, int> next;
-};
-Sam st[N];
-int sz, last;
-void sam_init(){
-    st[0].len = 0;
-    st[0].link = -1;
-    sz++;
-    last = 0;
+
+
+Sam::Sam(){
+    root = new State(0, nullptr);
+    last = root;
 }
-void sam_extend(char c){
-    int cur = sz++;
-    st[cur].len = st[last].len + 1;
-    int p = last;
-    while (p != -1 && !st[p].next.count(c)){
-        st[p].next[c] = cur;
-        p = st[p].link;
+
+void Sam::extend(char ch){
+    auto newState = new State(last->len + 1, nullptr);
+    auto itera = last;
+    while(itera != nullptr && !itera->next.count(ch)){
+        itera->addEdge(ch, newState);
+        itera = itera->link;
     }
-    if (p == -1){
-        st[cur].link = 0;
+    if(itera == nullptr){
+        newState->link = root;
     }
     else{
-        int q = st[p].next[c];
-        if (st[p].len + 1 == st[q].len){
-            st[cur].link = q;
+        auto linkState = itera->next[ch];
+        if(linkState->len == itera->len + 1){
+            newState->link = linkState;
         }
         else{
-            int clone = sz++;
-            st[clone].len = st[p].len + 1;
-            st[clone].next = st[q].next;
-            st[clone].link = st[q].link;
-            while (p != -1 && st[p].next[c] == q){
-                st[p].next[c] = clone;
-                p = st[p].link;
+            auto clone = new State(itera->len + 1, linkState->link);
+            clone->next = linkState->next;
+            while(itera != nullptr && itera->next[ch] == linkState){
+                itera->next[ch] = clone;
+                itera = itera->link;
             }
-            st[q].link = st[cur].link = clone;
+            linkState->link = clone;
+            newState->link = clone;
         }
     }
-    last = cur;
+    last = newState;
 }
 
-int main(int argc, char** argv){
+void Sam::addSubstrStatistic(const std::string& str){
+    auto curNode = root;
+    auto substr_len = 0;
+    for(size_t i = 0; i < str.size(); i++){
+        while(curNode != root && !curNode->next.count(str[i])){
+            curNode = curNode->link;
+            substr_len = curNode->len;
+        }
+        if(curNode->next.count(str[i])){
+            curNode = curNode->next[str[i]];
+            substr_len++;
+        }
+        if(substr_len >= 3){
+            substr_statistic[str.substr(i - substr_len + 1, substr_len)]++;
+        }
+    }
+}
 
-    std::ifstream ifs(argv[1]);
-    if(!ifs.is_open()){
-        std::cerr << "can not open " << argv[1] << std::endl;
-        return 1;
+std::unordered_map<std::string, int> Sam::getStatistic(){
+    return substr_statistic;
+}
+
+void Sam::destroy(State* curState, std::set<State*>& visited){
+    if(visited.find(curState) == visited.end()) return;
+    visited.insert(curState);
+    for(auto edge : curState->next){
+        destroy(edge.second, visited);
     }
-    sam_init();
-    std::string str;
-    std::map<std::string, int> exist_cnt;
-    int cnt = 0, tot = 0;
-    while(ifs >> str){
-        int v = 0, l = 0, bestpos = 0, best = 0;
-        for(size_t i = 0; i < str.size(); i++){
-            while(v && !st[v].next.count(str[i])){
-                v = st[v].link;
-                l = st[v].len;
-            }
-            if(st[v].next.count(str[i])){
-                v = st[v].next[str[i]];
-                l++;
-            }
-            if(l >= 3){
-//                std::cout << str.substr(i - l + 1, l) << " " << l << "\n";
-                exist_cnt[str.substr(i - l + 1, l)]++;
-            }
-        }
-        for(auto ch : str){
-            sam_extend(ch);
-        }
-        sam_extend(0);
-    }
-    for(auto p : exist_cnt){
-        if(p.second >= 4){
-            std::cout << p.first << " " << p.second << "\n";
-        }
-    }
-    return 0;
+    delete curState;
+}
+
+Sam::~Sam(){
+    std::set<State*> visited;    
+    destroy(root, visited);
+}
+
+Sam::State::State(){
+    len = 0;
+    link = nullptr;
+}
+
+Sam::State::State(int len, State* link){
+    this->len = len;
+    this->link = link;
+}
+
+void Sam::State::addEdge(char ch, State* nextNode){
+    next[ch] = nextNode;
 }
