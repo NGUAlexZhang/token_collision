@@ -9,4 +9,4 @@ if [! -f "$1"]; then
     exit 1
 fi
 
-sort -k2,2n -t' ' "$1"
+sort -k2,2nr -t' ' "$1"

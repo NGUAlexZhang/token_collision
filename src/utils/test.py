@@ -1,5 +1,5 @@
-from pypinyin import pinyin, Style
 import jieba
+from pypinyin import pinyin, Style, lazy_pinyin
 
 def pinyin_to_hanzi(pinyin_str):
     # 将拼音字符串分割成单个拼音
@@ -10,7 +10,9 @@ def pinyin_to_hanzi(pinyin_str):
     chosen_hanzi = [candidates[0][0] for candidates in hanzi_candidates]
     return "".join(chosen_hanzi)
 
-
-if __name__ == "__main__":
-    print(pinyin_to_hanzi("ni hao"))
-    pass
+# 示例使用
+pinyin_input = "ni hao ma"
+hanzi_output = pinyin_to_hanzi(pinyin_input)
+print(hanzi_output)
+hanzi = "测试"
+print(lazy_pinyin(hanzi))
