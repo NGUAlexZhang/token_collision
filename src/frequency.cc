@@ -39,8 +39,8 @@ int main(int argc, char** argv){
     }
     auto statistic = sam.getStatistic();
     for(auto p : statistic){
-        if(p.second + 1 >= frequency)
-            std::cout << p.first << " " << p.second + 1 << std::endl;
+        if(p.second >= frequency)
+            std::cout << p.first << " " << p.second << std::endl;
     }
     return 0;
 }
