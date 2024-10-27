@@ -7,7 +7,7 @@ OBJ_DIR = obj
 LIB_DIR = libs
 BIN_DIR = bin
 
-$(OBJ_DIR)/main.o: $(SRC_DIR)/main.cc $(SRC_DIR)/sam.hpp
+$(OBJ_DIR)/frequency.o: src/frequency.cc $(SRC_DIR)/sam.hpp
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $< -c $(FLAGS) -o $@
 
@@ -15,11 +15,15 @@ $(LIB_DIR)/libsam.so: $(SRC_DIR)/sam.cc $(SRC_DIR)/sam.hpp
 	@mkdir -p $(LIB_DIR)
 	$(CC) $< $(FLAGS) $(LDFLAGS) -o $@
 
-$(BIN_DIR)/analyzer: $(OBJ_DIR)/main.o $(LIB_DIR)/libsam.so
+$(LIB_DIR)/libacam.so: $(SRC_DIR)/acam.cc $(SRC_DIR)/acam.hpp
+	@mkdir -p $(LIB_DIR)
+	$(CC) $< $(FLAGS) $(LDFLAGS) -o $@
+
+$(BIN_DIR)/frequency: $(OBJ_DIR)/frequency.o $(LIB_DIR)/libsam.so
 	@mkdir -p $(BIN_DIR)
 	$(CC) $< $(FLAGS) -L $(LIB_DIR) -lsam -o $@
 
-all: $(BIN_DIR)/analyzer
+all: $(BIN_DIR)/frequency
 ld_path:
 	export LD_LIBRARY_PATH=./$(LIB_DIR)
 clean:

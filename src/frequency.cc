@@ -1,4 +1,4 @@
-#include "sam.hpp"
+#include "utils/sam.hpp"
 #include <fstream>
 #include <iostream>
 #include <string>
