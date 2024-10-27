@@ -4,7 +4,7 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-if [! -f "$1"]; then
+if [ ! -f "$1" ]; then
     echo "File Not Found: $1"
     exit 1
 fi
