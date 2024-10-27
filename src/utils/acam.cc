@@ -1,5 +1,6 @@
 #include "acam.hpp"
 #include <queue>
+#include <iostream>
 
 Acam::Acam(){
     root = new Node();
@@ -9,7 +10,7 @@ Acam::Acam(){
 void Acam::insert(const std::string& str){
     auto cur = root;
     for(auto ch : str){
-        if(cur->next[ch - 'a'] == 0){
+        if(cur->next[ch - 'a'] == nullptr){
             cur->next[ch - 'a'] = new Node();
             cur->next[ch - 'a']->depth = cur->depth + 1;
             cur->next[ch - 'a']->fail = root;
@@ -45,14 +46,20 @@ void Acam::build(){
 void Acam::match(const std::string& str){
     auto cur = root;
     for(int i = 0; i < str.length(); i++){
-        cur = cur->next[str[i] - '0'];
+        if(!isalpha(str[i]) || cur->next[str[i - 'a']] == root){
+            cur = root;
+            continue;
+        }
+        cur = cur->next[str[i] - 'a'];
         auto iterator = cur;
         while(iterator != root){
             if(iterator->endpos){
                 statistics[str.substr(i - iterator->depth + 1, iterator->depth)]++;
+                break;
             }
             iterator = iterator->fail;
         }
+
     }
 }
 

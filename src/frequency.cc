@@ -9,7 +9,7 @@ int main(int argc, char** argv){
     std::ios_base::sync_with_stdio(0);
     std::cout.tie(0);
     if(argc < 3){
-        std::cerr << "Usage analyzer <filename> <minimum occurance frequency>";
+        std::cerr << "Usage frequency <filename> <minimum occurance frequency>";
         return 1;
     }
     try{
