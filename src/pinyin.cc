@@ -60,7 +60,8 @@ int main(int argc, char** argv){
     }
     auto statistics = acam.getStatistics();
     for(auto p : statistics){
-        std::cout << p.first << " " << p.second << std::endl;
+        if(p.second >= frequency)
+            std::cout << p.first << " " << p.second << std::endl;
     }
     return 0;
 }
