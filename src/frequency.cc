@@ -30,12 +30,13 @@ int main(int argc, char** argv){
     }
     ifs.tie(0);
     std::unordered_map<std::string, int> res;
+    Sam sam;
     while(ifs >> str){
-        Sam sam;
         for(auto ch : str){
             sam.extend(ch);
         }
         sam.countSubstring(res);
+        sam.clear();
     }
     for(auto p : res){
         if(p.second >= frequency)

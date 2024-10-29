@@ -88,14 +88,24 @@ void Sam::countSubstring(std::unordered_map<std::string, int>& statistics){
             states[v].cnt += states[u].cnt;
         }
     }
-    dfs(statistics, "", 0);
+    std::string str = "";
+    dfs(statistics, str, 0);
 }
 
-void Sam::dfs(std::unordered_map<std::string, int>& statistics, std::string str, int cur){
+void Sam::dfs(std::unordered_map<std::string, int>& statistics, std::string& str, int cur){
     if(str.size() >= 3){
         statistics[str] += states[cur].cnt;
     }
     for(auto p : states[cur].next){
-        dfs(statistics, str + p.first, p.second);
+        str.push_back(p.first);
+        dfs(statistics, str, p.second);
+        str.pop_back();
     }
+}
+
+void Sam::clear(){
+    last = 0;
+    states.clear();
+    states.emplace_back();
+
 }
