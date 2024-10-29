@@ -1,87 +1,101 @@
 #include "sam.hpp"
 #include <iostream>
+#include <queue>
 
 
 Sam::Sam(){
-    root = new State(0, nullptr);
-    last = root;
+    states.emplace_back();
+    last = 0;
 }
+
+Sam::Sam(const std::string& str){
+    for(auto ch : str){
+        extend(ch);
+    }
+}
+
 
 void Sam::extend(char ch){
-    auto newState = new State(last->len + 1, nullptr);
-    auto itera = last;
-    while(itera != nullptr && !itera->next.count(ch)){
-        itera->addEdge(ch, newState);
-        itera = itera->link;
+    int cur = states.size();
+    states.emplace_back();
+    states[cur].len = states[last].len + 1;
+    states[cur].cnt = 1;
+    int p = last;
+    while(p != -1 && !states[p].next.count(ch)){
+        states[p].next[ch] = cur;
+        p = states[p].link;
     }
-    if(itera == nullptr){
-        newState->link = root;
+    if(p == -1){
+        states[cur].link = 0;
     }
     else{
-        auto linkState = itera->next[ch];
-        if(linkState->len == itera->len + 1){
-            newState->link = linkState;
+        auto q = states[p].next[ch];
+        if(states[q].len == states[p].len + 1){
+            states[cur].link = q;
         }
         else{
-            auto clone = new State(itera->len + 1, linkState->link);
-            clone->next = linkState->next;
-            while(itera != nullptr && itera->next[ch] == linkState){
-                itera->next[ch] = clone;
-                itera = itera->link;
+            int clone = states.size();
+            states.emplace_back();
+            states[clone].len = states[p].len + 1;
+            states[clone].next = states[q].next;
+            states[clone].link = states[q].link;
+            while(p != -1 && states[p].next[ch] == q){
+                states[p].next[ch] = clone;
+                p = states[p].link;
             }
-            linkState->link = clone;
-            newState->link = clone;
+            states[q].link = states[cur].link = clone;
         }
     }
-    last = newState;
+    last = cur;
 }
 
-void Sam::addSubstrStatistic(const std::string& str){
-    auto curNode = root;
-    auto substr_len = 0;
-    for(size_t i = 0; i < str.size(); i++){
-        while(curNode != root && !curNode->next.count(str[i])){
-            curNode = curNode->link;
-            substr_len = curNode->len;
-        }
-        if(curNode->next.count(str[i])){
-            curNode = curNode->next[str[i]];
-            substr_len++;
-        }
-        if(substr_len >= 3){
-            substr_statistic[str.substr(i - substr_len + 1, substr_len)]++;
-        }
-    }
-}
-
-std::unordered_map<std::string, int> Sam::getStatistic(){
-    return substr_statistic;
-}
-
-void Sam::destroy(State* curState, std::set<State*>& visited){
-    if(visited.find(curState) == visited.end()) return;
-    visited.insert(curState);
-    for(auto edge : curState->next){
-        destroy(edge.second, visited);
-    }
-    delete curState;
-}
-
-Sam::~Sam(){
-    std::set<State*> visited;    
-    destroy(root, visited);
-}
-
-Sam::State::State(){
-    len = 0;
-    link = nullptr;
-}
-
-Sam::State::State(int len, State* link){
+Sam::State::State(int len, int link, int cnt){
     this->len = len;
     this->link = link;
+    this->cnt = cnt;
+    this->in = 0;
 }
 
-void Sam::State::addEdge(char ch, State* nextNode){
-    next[ch] = nextNode;
+void Sam::countSubstring(std::unordered_map<std::string, int>& statistics){
+    for(int i = 0; i < states.size(); i++){
+        for(auto p : states[i].next)
+            states[p.second].in++;
+    }
+    std::vector<int> order;
+    for(int i = 0; i < states.size(); i++){
+        if(states[i].in == 0) order.push_back(i);
+    }
+    for(int i = 0; i < order.size(); i++){
+        int u = order[i] ;
+        for(auto p : states[u].next){
+            auto v = p.second;
+            states[v].in--;
+            if(states[v].in == 0)
+                order.push_back(v);
+        }
+        //int v = states[u].link;
+        //states[v].in--;
+        //states[v].cnt += states[u].cnt;
+        //if(states[v].in == 0){
+        //    q.push(v);
+        //}
+    }
+
+    for(int i = order.size() - 1; i >= 0; i--){
+        int u = order[i];
+        if(states[u].link != -1){
+            int v = states[u].link;
+            states[v].cnt += states[u].cnt;
+        }
+    }
+    dfs(statistics, "", 0);
+}
+
+void Sam::dfs(std::unordered_map<std::string, int>& statistics, std::string str, int cur){
+    if(str.size() >= 3){
+        statistics[str] += states[cur].cnt;
+    }
+    for(auto p : states[cur].next){
+        dfs(statistics, str + p.first, p.second);
+    }
 }

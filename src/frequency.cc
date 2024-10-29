@@ -22,7 +22,6 @@ int main(int argc, char** argv){
         std::cerr << e.what() << std::endl;
     }
     auto frequency = std::stoi(argv[2]);
-    Sam sam;
     std::ifstream ifs(argv[1]);
     std::string str;
     if(!ifs.is_open()){
@@ -30,15 +29,15 @@ int main(int argc, char** argv){
         return 1;
     }
     ifs.tie(0);
+    std::unordered_map<std::string, int> res;
     while(ifs >> str){
-        sam.addSubstrStatistic(str);
+        Sam sam;
         for(auto ch : str){
             sam.extend(ch);
         }
-        sam.extend(0);
+        sam.countSubstring(res);
     }
-    auto statistic = sam.getStatistic();
-    for(auto p : statistic){
+    for(auto p : res){
         if(p.second >= frequency)
             std::cout << p.first << " " << p.second << std::endl;
     }

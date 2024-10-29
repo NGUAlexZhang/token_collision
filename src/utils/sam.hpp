@@ -6,36 +6,27 @@
 #include <set>
 #include <string>
 #include <iostream>
+#include <queue>
 
 class Sam{
 private:
     struct State{
+        int in;
         int len;
-        State* link;
-        std::map<char, State*> next;
-        State();
-        State(int len, State* link);
-        void addEdge(char ch, State* nextState);
+        int link;
+        int cnt;
+        std::map<char, int> next;
+        State(int len = 0, int link = -1, int cnt = 0);
     };
-    void destroy(State* curState, std::set<State*>& visited);
-    State* root;
-    State* last;
-    std::unordered_map<std::string, int> substr_statistic;
+    int last;
+
 public:
-    void recurse(State* cur){
-        std::cout << cur->len << std::endl;
-        for(auto p : cur->next){
-            recurse(p.second);
-        }
-    }
-    void print(){
-       recurse(root);
-    }
+    std::vector<State> states;
+    Sam(const std::string& s);
     Sam();
     void extend(char ch);
-    void addSubstrStatistic(const std::string& str);
-    std::unordered_map<std::string, int> getStatistic();
-    ~Sam();
+    void countSubstring(std::unordered_map<std::string, int>& statistics);
+    void dfs(std::unordered_map<std::string, int>& statistics, std::string str, int cur);
 };
 
 #endif

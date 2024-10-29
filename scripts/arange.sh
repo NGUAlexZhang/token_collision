@@ -16,12 +16,16 @@ for l1 in "${lines1[@]}"; do
     for l2 in "${lines2[@]}"; do
         for l3 in "${lines3[@]}"; do
             # 三个字符串组合
-            [[ ${#l1}${#l2}${#l3} -gt 6 ]] && echo "$l1$l2$l3"
+            combo="$l1$l2$l3"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
 
             # 两个字符串组合
-            [[ ${#l1}${#l2} -gt 6 ]] && echo "$l1$l2"
-            [[ ${#l2}${#l3} -gt 6 ]] && echo "$l2$l3"
-            [[ ${#l1}${#l3} -gt 6 ]] && echo "$l1$l3"
+            combo="$l1$l2"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l2$l3"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l1$l3"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
 
             # 单个字符串，如果足够长，则输出
             [[ ${#l1} -gt 6 ]] && echo "$l1"
