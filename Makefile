@@ -37,8 +37,8 @@ ld_path:
 	export LD_LIBRARY_PATH=./$(LIB_DIR)
 
 install:
-	mv $(BIN_DIR)/frequency /usr/local/bin
-	mv $(BIN_DIR)/pinyin /usr/local/bin
-	mv $(LIB_DIR)/*.so /usr/lib
+	cp $(BIN_DIR)/frequency /usr/local/bin
+	cp $(BIN_DIR)/pinyin /usr/local/bin
+	cp $(LIB_DIR)/*.so /usr/lib
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR) $(BIN_DIR)
