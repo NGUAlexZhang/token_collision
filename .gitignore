@@ -5,6 +5,5 @@
 /obj/*
 /bin/*
 /tmp/*
-/scripts/generate.sh
 wordlist.txt
 *_bak

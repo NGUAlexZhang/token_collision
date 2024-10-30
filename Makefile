@@ -1,4 +1,4 @@
-.PHONY: all clean
+.PHONY: all clean install
 CC = g++
 SRC_DIR = src/utils
 INCLUDE_DIR = include
