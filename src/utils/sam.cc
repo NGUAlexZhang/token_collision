@@ -1,4 +1,4 @@
-#include "sam.hpp"
+#include <sam.hpp>
 #include <iostream>
 #include <queue>
 

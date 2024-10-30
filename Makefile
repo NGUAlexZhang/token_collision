@@ -1,25 +1,26 @@
 .PHONY: all clean
 CC = g++
 SRC_DIR = src/utils
-FLAGS = -O2 
+INCLUDE_DIR = include
+FLAGS = -O2 -I./include
 LDFLAGS = -fPIC -shared
 OBJ_DIR = obj
 LIB_DIR = libs
 BIN_DIR = bin
 
-$(OBJ_DIR)/frequency.o: src/frequency.cc $(SRC_DIR)/sam.hpp
+$(OBJ_DIR)/frequency.o: src/frequency.cc $(INCLUDE_DIR)/sam.hpp
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $< -c $(FLAGS) -o $@
 
-$(OBJ_DIR)/pinyin.o: src/pinyin.cc $(SRC_DIR)/acam.hpp
+$(OBJ_DIR)/pinyin.o: src/pinyin.cc $(INCLUDE_DIR)/acam.hpp
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $< -c $(FLAGS) -o $@
 
-$(LIB_DIR)/libsam.so: $(SRC_DIR)/sam.cc $(SRC_DIR)/sam.hpp
+$(LIB_DIR)/libsam.so: $(SRC_DIR)/sam.cc $(INCLUDE_DIR)/sam.hpp
 	@mkdir -p $(LIB_DIR)
 	$(CC) $< $(FLAGS) $(LDFLAGS) -o $@
 
-$(LIB_DIR)/libacam.so: $(SRC_DIR)/acam.cc $(SRC_DIR)/acam.hpp
+$(LIB_DIR)/libacam.so: $(SRC_DIR)/acam.cc $(INCLUDE_DIR)/acam.hpp
 	@mkdir -p $(LIB_DIR)
 	$(CC) $< $(FLAGS) $(LDFLAGS) -o $@
 
@@ -34,5 +35,10 @@ $(BIN_DIR)/pinyin: $(OBJ_DIR)/pinyin.o $(LIB_DIR)/libacam.so
 all: $(BIN_DIR)/frequency $(BIN_DIR)/pinyin
 ld_path:
 	export LD_LIBRARY_PATH=./$(LIB_DIR)
+
+install:
+	mv $(BIN_DIR)/frequency /usr/local/bin
+	mv $(BIN_DIR)/pinyin /usr/local/bin
+	mv $(LIB_DIR)/*.so /usr/lib
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR) $(BIN_DIR)
