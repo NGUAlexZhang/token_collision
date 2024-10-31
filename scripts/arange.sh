@@ -18,13 +18,29 @@ for l1 in "${lines1[@]}"; do
             # 三个字符串组合
             combo="$l1$l2$l3"
             [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l1$l3$l2"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l2$l1$l3"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l2$l3$l1"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l3$l2$l1"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l3$l1$l2"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
 
             # 两个字符串组合
             combo="$l1$l2"
             [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l2$l1"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
             combo="$l2$l3"
             [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l3$l2"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
             combo="$l1$l3"
+            [[ ${#combo} -gt 6 ]] && echo "$combo"
+            combo="$l3$l1"
             [[ ${#combo} -gt 6 ]] && echo "$combo"
 
             # 单个字符串，如果足够长，则输出
