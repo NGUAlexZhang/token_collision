@@ -29,17 +29,18 @@ int main(int argc, char** argv){
         return 1;
     }
     ifs.tie(0);
-    std::unordered_map<std::string, int> res;
     Sam sam;
     while(ifs >> str){
-        for(auto ch : str){
-            sam.extend(ch);
-        }
-        sam.countSubstring(res);
-        sam.clear();
+        //for(auto ch : str){
+        //    sam.extend(ch);
+        //}
+        //sam.countSubstring(res);
+        //sam.clear();
+        sam.extend(str);
     }
+    auto res = sam.countSubstring(frequency);
     for(auto p : res){
-        if(p.second >= frequency)
+        if(p.second >= frequency && p.first.size() >= 3)
             std::cout << p.first << " " << p.second << std::endl;
     }
     return 0;

@@ -17,8 +17,9 @@ private:
         int cnt;
         std::map<char, int> next;
         State(int len = 0, int link = -1, int cnt = 0);
+        std::unordered_map<std::string, int> statistics;
     };
-    void dfs(std::unordered_map<std::string, int>& statistics, std::string& str, int cur);
+    void dfs(int cur, int frequency);
     int last;
 
 public:
@@ -26,7 +27,8 @@ public:
     Sam(const std::string& s);
     Sam();
     void extend(char ch);
-    void countSubstring(std::unordered_map<std::string, int>& statistics);
+    void extend(const std::string& str);
+    std::unordered_map<std::string, int> countSubstring(int frequency = 10);
     void clear();
 };
 

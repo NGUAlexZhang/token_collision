@@ -14,8 +14,20 @@ Sam::Sam(const std::string& str){
     }
 }
 
+void Sam::extend(const std::string& str){
+    last = 0;
+    for(auto ch : str){
+        extend(ch);
+    }
+}
 
 void Sam::extend(char ch){
+    if(states[last].next.count(ch)){
+        int cur = states[last].next[ch];
+        states[cur].cnt++;
+        last = cur;
+        return;
+    }
     int cur = states.size();
     states.emplace_back();
     states[cur].len = states[last].len + 1;
@@ -56,7 +68,7 @@ Sam::State::State(int len, int link, int cnt){
     this->in = 0;
 }
 
-void Sam::countSubstring(std::unordered_map<std::string, int>& statistics){
+std::unordered_map<std::string, int> Sam::countSubstring(int frequency){
     for(int i = 0; i < states.size(); i++){
         for(auto p : states[i].next)
             states[p.second].in++;
@@ -73,12 +85,6 @@ void Sam::countSubstring(std::unordered_map<std::string, int>& statistics){
             if(states[v].in == 0)
                 order.push_back(v);
         }
-        //int v = states[u].link;
-        //states[v].in--;
-        //states[v].cnt += states[u].cnt;
-        //if(states[v].in == 0){
-        //    q.push(v);
-        //}
     }
 
     for(int i = order.size() - 1; i >= 0; i--){
@@ -88,18 +94,21 @@ void Sam::countSubstring(std::unordered_map<std::string, int>& statistics){
             states[v].cnt += states[u].cnt;
         }
     }
-    std::string str = "";
-    dfs(statistics, str, 0);
+    dfs(0, frequency);
+    return states[0].statistics;
 }
 
-void Sam::dfs(std::unordered_map<std::string, int>& statistics, std::string& str, int cur){
-    if(str.size() >= 3){
-        statistics[str] += states[cur].cnt;
-    }
+void Sam::dfs(int cur, int frequency){
+    if(states[cur].cnt < frequency)
+        return;
+    states[cur].statistics[""] = states[cur].cnt;
     for(auto p : states[cur].next){
-        str.push_back(p.first);
-        dfs(statistics, str, p.second);
-        str.pop_back();
+        if(!states[p.second].statistics.size()){
+            dfs(p.second, frequency);
+        }
+        for(auto suffix : states[p.second].statistics){
+            states[cur].statistics[p.first + suffix.first] = suffix.second;
+        }
     }
 }
 
