@@ -8,14 +8,14 @@
 #include <filesystem>
 #include <algorithm>
 
-std::string to_lower(const std::string& str){
-    std::string res;
-    res.reserve(str.size());
-    for(auto ch : str){
-        res += std::tolower(ch);
-    }
-    return res;
-}
+//std::string to_lower(const std::string& str){
+//    std::string res;
+//    res.reserve(str.size());
+//    for(auto ch : str){
+//        res += std::tolower(ch);
+//    }
+//    return res;
+//}
 
 int main(int argc, char** argv){
     std::ios_base::sync_with_stdio(0);
@@ -45,23 +45,29 @@ int main(int argc, char** argv){
         return 1;
     }
     std::ifstream ifs(argv[1]);
-    std::string str;
     ifs.tie(0);
+    std::vector<int> idx;
+    std::vector<std::string> strs;
+    std::string str;
     while(ifs >> str){
-        acam.insert(str);
+        strs.push_back(str);
     }
+    idx.resize(strs.size());
+
+    for(int i = 0; i < strs.size(); i++){
+        acam.insert(strs[i], idx[i]);
+    }
+        
     acam.build();
 
     ifs.close();
     ifs.open(argv[2]);
     while(ifs >> str){
-        str = to_lower(str);
         acam.match(str);
     }
-    auto statistics = acam.getStatistics();
-    for(auto p : statistics){
-        if(p.second >= frequency)
-            std::cout << p.first << " " << p.second << std::endl;
+    acam.topu();
+    for(int i = 0; i < idx.size(); i++){
+        std::cout << strs[i] << " " << acam.getAns(idx[i]) << '\n';
     }
     return 0;
 }

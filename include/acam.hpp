@@ -1,23 +1,29 @@
+#ifndef __ACAM__HPP__
+#define __ACAM__HPP__
 #include <string>
-#include <unordered_map>
-#include <set>
+#include <vector>
 class Acam{ //means AC-automaton
 private:
     struct Node{
-        Node* next[26];
-        bool endpos;
-        Node* fail;
+        int next[26];
+        int fail;
+        int ans;
+        int in;
+        int idx;
         Node();
         int depth;
     };
-    Node* root; 
-    std::unordered_map<std::string, int> statistics;
-    void destroy(Node* cur, std::set<Node*>& deleted);
+    int pidx;
+    std::vector<Node> nodes;
+    std::vector<int> ans;
+    int root; 
 public:
-    void insert(const std::string& str);
+    void insert(const std::string& str, int& idx);
     void build();
     void match(const std::string& str);
-    std::unordered_map<std::string, int> getStatistics();
+    void topu();
+    int getAns(int idx);
     Acam();
-    ~Acam();
 };
+
+#endif

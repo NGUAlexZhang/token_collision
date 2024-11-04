@@ -41,7 +41,7 @@ int main(int argc, char** argv){
     auto res = sam.countSubstring(frequency);
     for(auto p : res){
         if(p.second >= frequency && p.first.size() >= 3)
-            std::cout << p.first << " " << p.second << std::endl;
+            std::cout << p.first << " " << p.second << '\n';
     }
     return 0;
 }
