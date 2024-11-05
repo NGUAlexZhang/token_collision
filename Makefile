@@ -1,4 +1,4 @@
-.PHONY: all clean install
+.PHONY: all clean install ld_path
 CC = g++
 SRC_DIR = src/utils
 INCLUDE_DIR = include
@@ -13,6 +13,10 @@ $(OBJ_DIR)/frequency.o: src/frequency.cc $(INCLUDE_DIR)/sam.hpp
 	$(CC) $< -c $(FLAGS) -o $@
 
 $(OBJ_DIR)/pinyin.o: src/pinyin.cc $(INCLUDE_DIR)/acam.hpp
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $< -c $(FLAGS) -o $@
+
+$(OBJ_DIR)/permutation.o: src/permutation.cc
 	@mkdir -p $(OBJ_DIR)
 	$(CC) $< -c $(FLAGS) -o $@
 
@@ -32,7 +36,11 @@ $(BIN_DIR)/pinyin: $(OBJ_DIR)/pinyin.o $(LIB_DIR)/libacam.so
 	@mkdir -p $(BIN_DIR)
 	$(CC) $< $(FLAGS) -L $(LIB_DIR) -lacam -o $@
 
-all: $(BIN_DIR)/frequency $(BIN_DIR)/pinyin
+$(BIN_DIR)/permutation: $(OBJ_DIR)/permutation.o 
+	@mkdir -p $(BIN_DIR)
+	$(CC) $< $(FLAGS) -L $(LIB_DIR) -o $@
+
+all: $(BIN_DIR)/frequency $(BIN_DIR)/pinyin $(BIN_DIR)/permutation
 ld_path:
 	export LD_LIBRARY_PATH=./$(LIB_DIR)
 
@@ -40,5 +48,6 @@ install:
 	cp $(BIN_DIR)/frequency /usr/local/bin
 	cp $(BIN_DIR)/pinyin /usr/local/bin
 	cp $(LIB_DIR)/*.so /usr/lib
+	cp $(BIN_DIR)/permutation  /usr/local/bin
 clean:
 	rm -rf $(OBJ_DIR) $(LIB_DIR) $(BIN_DIR)

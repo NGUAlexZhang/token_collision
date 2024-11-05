@@ -12,25 +12,26 @@ mv tmp/KA.txt.tmp tmp/KA.txt
 
 pinyin pinyins ./dist/passwd 10 > tmp/word1.txt
 ./scripts/sort_and_remove.sh tmp/word1.txt
-#head -n 1000 tmp/word1.txt > tmp/word1.txt.tmp
-#mv tmp/word1.txt.tmp  tmp/word1.txt
+head -n 1000 tmp/word1.txt > tmp/word1.txt.tmp
+mv tmp/word1.txt.tmp  tmp/word1.txt
 
 ./scripts/append.sh ./tmp/word1.txt ./tmp/word1.txt > ./tmp/word2.txt
 pinyin ./tmp/word2.txt ./dist/passwd 5 > tmp/word2.txt.tmp
 mv tmp/word2.txt.tmp tmp/word2.txt
 ./scripts/sort_and_remove.sh tmp/word2.txt
-#head -n 1000 tmp/word2.txt > tmp/word2.txt.tmp
-#mv tmp/word2.txt.tmp tmp/word2.txt
+head -n 1000 tmp/word2.txt > tmp/word2.txt.tmp
+mv tmp/word2.txt.tmp tmp/word2.txt
 
 ./scripts/append.sh ./tmp/word2.txt ./tmp/word1.txt > ./tmp/word3.txt
 pinyin ./tmp/word3.txt ./dist/passwd 5 > tmp/word3.txt.tmp
 mv tmp/word3.txt.tmp tmp/word3.txt
 ./scripts/sort_and_remove.sh tmp/word3.txt
-#head -n 1000 tmp/word3.txt > tmp/word3.txt.tmp
-#mv tmp/word3.txt.tmp tmp/word3.txt
+head -n 1000 tmp/word3.txt > tmp/word3.txt.tmp
+mv tmp/word3.txt.tmp tmp/word3.txt
 
 cat tmp/word1.txt > tmp/words.txt
 cat tmp/word2.txt >> tmp/words.txt
 cat tmp/word3.txt >> tmp/words.txt
 
-./scripts/arange.sh tmp/words.txt tmp/KA.txt tmp/substr.txt > wordlist.txt
+#./scripts/arange.sh tmp/words.txt tmp/KA.txt tmp/substr.txt > wordlist.txt
+permutation tmp/words.txt tmp/KA.txt tmp/substr.txt > wordlist.txt
