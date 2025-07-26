@@ -27,3 +27,4 @@ chmod 755 ./scripts/*
 ./scripts/generate.sh
 ```
 由于生成的字典可能会很大，所以可以随时中断此程序
+已停止更新
